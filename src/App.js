@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { Input } from "./components/Input/Input";
+import { Weather } from "./components/Weather/Weather";
+import { useFetchWeather } from "./useFetchWeather";
+import { useLocalStorage } from "./useLocalStorageLocation";
 
-function App() {
+export function App() {
+  const [location, setLocation] = useLocalStorage("", "location");
+  const { isLoading, displayLocation, weather } = useFetchWeather(location);
+
+  function onSetLocation(e) {
+    setLocation((l) => e.target.value);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Classy Weather</h1>
+      <Input location={location} onChangeLocation={onSetLocation} />
+      {isLoading && <p className="loader">Loading...</p>}
+      {weather?.weathercode && (
+        <Weather weather={weather} location={displayLocation} />
+      )}
     </div>
   );
 }
-
-export default App;
